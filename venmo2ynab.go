@@ -108,8 +108,8 @@ func recToList(rec CleanRecord) []string {
 func main() {
 
     dirPtr := flag.String("dir", "./", "working directory")
-    inPtr := flag.String("inFile", "", "input file")
-    outPtr := flag.String("outFile", "", "output file")
+    inPtr := flag.String("inFile", "", "name of input file")
+    outPtr := flag.String("outFile", "", "name of output file")
 
     flag.Parse()
 
