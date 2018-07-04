@@ -7,7 +7,7 @@ import (
 	"os"
 	"encoding/csv"
 	"io"
-    	"path/filepath"
+    "path/filepath"
 )
 
 func check(e error) {
@@ -42,7 +42,7 @@ type CleanRecord struct {
 func buildRecord(row []string) (rec Record) {
 	rec = Record{
 		Date:        ripDate(row[1]),
-        	Type:        string(row[2]),
+        Type:        string(row[2]),
 		Note:        string(row[4]),
 		From:        string(row[5]),
 		To:          string(row[6]),
@@ -55,9 +55,9 @@ func ripDate(dt string) string {
 	const refTime = "2006-01-02T15:04:05"
 	timestamp, _ := time.Parse(refTime, dt)
 	return fmt.Sprintf("%04d-%02d-%02d", 
-		       	   timestamp.Year(), 
-		           timestamp.Month(), 
-		           timestamp.Day())
+                       timestamp.Year(), 
+                       timestamp.Month(), 
+                       timestamp.Day())
 }
 
 func mungeTransactions(rec Record) CleanRecord {
