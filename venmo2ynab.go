@@ -1,60 +1,60 @@
 package main
 
 import (
-	"fmt"
-	"flag"
-	"time"
-	"os"
-	"encoding/csv"
-	"io"
+    "fmt"
+    "flag"
+    "time"
+    "os"
+    "encoding/csv"
+    "io"
     "path/filepath"
 )
 
 func check(e error) {
-	if e != nil {
-		panic(e)
-	}
+    if e != nil {
+        panic(e)
+    }
 }
 
 type Record struct {
-	// ` ID`    string
-	Date           string
-	Type           string
-	// Status      string
-	Note           string
-	From           string
-	To             string
-	Amount         string
-	// `Amount (fees)`     string
-	// Source         interface{}
-	// Destination    interface{}
+    // ` ID`    string
+    Date           string
+    Type           string
+    // Status      string
+    Note           string
+    From           string
+    To             string
+    Amount         string
+    // `Amount (fees)`     string
+    // Source         interface{}
+    // Destination    interface{}
 }
 
 type CleanRecord struct {
-	Date     string
-	Payee    string
-	Category string
-	Memo     string
-	Outflow  string
-	Inflow   string
+    Date     string
+    Payee    string
+    Category string
+    Memo     string
+    Outflow  string
+    Inflow   string
 }
 
 func buildRecord(row []string) (rec Record) {
-	rec = Record{
-		Date:        ripDate(row[1]),
+    rec = Record{
+        Date:        ripDate(row[1]),
         Type:        string(row[2]),
-		Note:        string(row[4]),
-		From:        string(row[5]),
-		To:          string(row[6]),
-		Amount:      string(row[7]),
-	}
-	return
+        Note:        string(row[4]),
+        From:        string(row[5]),
+        To:          string(row[6]),
+        Amount:      string(row[7]),
+    }
+    return
 }
 
 func ripDate(dt string) string {
-	const refTime = "2006-01-02T15:04:05"
-	timestamp, _ := time.Parse(refTime, dt)
-	return fmt.Sprintf("%04d-%02d-%02d", 
+    const refTime = "2006-01-02T15:04:05"
+    timestamp, _ := time.Parse(refTime, dt)
+    return fmt.Sprintf("%04d-%02d-%02d", 
                        timestamp.Year(), 
                        timestamp.Month(), 
                        timestamp.Day())
@@ -113,15 +113,15 @@ func main() {
 
     flag.Parse()
 
-	inPath := filepath.Join(*dirPtr, *inPtr)
+    inPath := filepath.Join(*dirPtr, *inPtr)
     outPath := filepath.Join(*dirPtr, *outPtr)
     file, err := os.Open(inPath)
-	check(err)
+    check(err)
     defer file.Close()
     
-	r := csv.NewReader(file)
-	_, err = r.Read()  // clear header row
-	check(err)
+    r := csv.NewReader(file)
+    _, err = r.Read()  // clear header row
+    check(err)
 
     var records [][]string
     headers := []string{
@@ -134,20 +134,20 @@ func main() {
     }
     records = append(records, headers)
 
-	for {
-		row, err := r.Read()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			panic(err)
-		}
+    for {
+        row, err := r.Read()
+        if err == io.EOF {
+            break
+        } else if err != nil {
+            panic(err)
+        }
 
-		rec := buildRecord(row)
-		cleanRec := mungeTransactions(rec)
+        rec := buildRecord(row)
+        cleanRec := mungeTransactions(rec)
         output := recToList(cleanRec)
 
         records = append(records, output)
-	}
+    }
 
     outFile, err := os.Create(outPath)
     check(err)
